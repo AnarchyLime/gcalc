@@ -2,7 +2,9 @@ package gcalc
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
+	"strings"
 )
 
 type calcState struct {
@@ -63,6 +65,27 @@ func (cs *calcState) PushKey(key string) (string, error) {
 			n = cs.lastOperand
 		}
 		return n, &InputError{key}
+	}
+}
+
+func (cs *calcState) ProcessExpr(expr string) (string, error) {
+	var result string
+	var err error
+	r, _ := regexp.Compile(`^[\s\d\+-=]+$`)
+	expr = strings.TrimSpace(expr)
+	if r.MatchString(expr) {
+		fields := strings.Fields(expr)
+		for _, f := range fields {
+			for _, c := range f {
+				result, err = cs.PushKey(string(c))
+				if err != nil {
+					return "", err
+				}
+			}
+		}
+		return result, nil
+	} else {
+		return "", &InputError{expr}
 	}
 }
 
@@ -145,7 +168,9 @@ func (cs *calcState) compute(op string) string {
 			cs.stack.Push(cs.lastOperand)
 			return cs.compute(op)
 		} else {
-			return cs.stack.Top()
+			r := cs.stack.Top()
+			cs.stack.Push(op)
+			return r
 		}
 	}
 }

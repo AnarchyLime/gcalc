@@ -8,6 +8,25 @@ func TestInitCalc(t *testing.T) {
 	}
 }
 
+func TestSingleNumberToContinuousAdd(t *testing.T) {
+	cs := NewCalc()
+	r, _ := cs.PushKey("4")
+	r, _ = cs.PushKey("5")
+	t.Log(cs.stack)
+	r, _ = cs.PushKey("=")
+	t.Log(cs.stack)
+	r, _ = cs.PushKey("1")
+	r, _ = cs.PushKey("+")
+	r, _ = cs.PushKey("2")
+	r, _ = cs.PushKey("+")
+	r, _ = cs.PushKey("3")
+	r, _ = cs.PushKey("=")
+
+	if r != "6" {
+		t.Error("Failed to properly reset operations after single entry 6 != " + r)
+	}
+}
+
 func TestPushKey(t *testing.T) {
 	cs := NewCalc()
 

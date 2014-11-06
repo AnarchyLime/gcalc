@@ -5,15 +5,12 @@ import (
 	"fmt"
 	"github.com/AnarchyLime/gcalc/gcalc"
 	"os"
-	"regexp"
-	"strings"
 )
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
 	var input, result string
 	var err error
-	r, _ := regexp.Compile(`^[\s\d\+-=]+$`)
 
 	calc := gcalc.NewCalc()
 
@@ -21,35 +18,19 @@ func main() {
 
 	for {
 		input, _ = reader.ReadString('\n')
-		input = strings.TrimSpace(input)
 
-		if input == "q" || input == "Q" {
+		if input[0:1] == "q" {
 			fmt.Println("=> goodbye!")
 			return
 		}
 
 		input = input + "="
 
-		if r.MatchString(input) {
-			fields := strings.Fields(input)
-			for _, f := range fields {
-				for _, c := range f {
-					result, err = calc.PushKey(string(c))
-					if err != nil {
-						break
-					}
-				}
-				if err != nil {
-					break
-				}
-			}
-			if err != nil {
-				fmt.Println("=> Error: " + err.Error())
-			} else {
-				fmt.Println("=> " + result)
-			}
+		result, err = calc.ProcessExpr(input)
+		if err != nil {
+			fmt.Println("=> Error: " + err.Error())
 		} else {
-			fmt.Println("=> Invalid Input: " + input)
+			fmt.Println("=> " + result)
 		}
 	}
 }
