@@ -3,7 +3,14 @@ gcalc
 
 Simple one function command line calculator implemented in golang
 
+Goals
+=====
+* Write simple app in golang
+* Experiment with Docker
+
 Todo
 =====
-- Added a command line interface to the gcalc.go
-- Add Examples
+* more/better unit tests
+* look at golang examples
+* look at golang benchmarks
+* Integrate with Docker
